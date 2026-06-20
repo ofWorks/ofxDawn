@@ -1,0 +1,14 @@
+# ofWorks project config for the ofxDawn particles example.
+# Generate with:  ofGen   (run from this folder)
+ofpath: "../../.."
+version: "1.0.0"
+
+templates:
+  - chalet
+  - zed
+  - macos
+
+# Metal / IOSurface / Foundation are pulled in automatically by ofxDawn's
+# addon_config.mk, so they don't need to be listed here.
+addons:
+  - ofxDawn
