@@ -37,8 +37,22 @@ bool ofxDawn::setup() {
 	if (!adapter) return false;
 
 	// --- Device ---
+	// Features needed for zero-copy IOSurface <-> OpenGL interop.
+	std::vector<wgpu::FeatureName> requiredFeatures;
+	for (wgpu::FeatureName f : { wgpu::FeatureName::SharedTextureMemoryIOSurface,
+								 wgpu::FeatureName::SharedFenceMTLSharedEvent }) {
+		if (adapter.HasFeature(f)) {
+			requiredFeatures.push_back(f);
+		} else {
+			ofLogWarning("ofxDawn") << "adapter missing feature " << static_cast<int>(f)
+									<< " - zero-copy texture sharing will be unavailable";
+		}
+	}
+
 	wgpu::DeviceDescriptor deviceDesc {};
 	deviceDesc.label = "ofxDawn device";
+	deviceDesc.requiredFeatureCount = requiredFeatures.size();
+	deviceDesc.requiredFeatures = requiredFeatures.data();
 	deviceDesc.SetUncapturedErrorCallback(
 		[](const wgpu::Device &, wgpu::ErrorType type, wgpu::StringView message) {
 			ofLogError("ofxDawn") << "uncaptured error (" << static_cast<int>(type) << "): " << sv(message);
@@ -79,6 +93,15 @@ bool ofxDawn::setup() {
 
 void ofxDawn::processEvents() {
 	if (instance) instance.ProcessEvents();
+}
+
+void ofxDawn::waitForGPU() {
+	if (!queue) return;
+	bool done = false;
+	queue.OnSubmittedWorkDone(
+		wgpu::CallbackMode::AllowProcessEvents,
+		[&](wgpu::QueueWorkDoneStatus, wgpu::StringView) { done = true; });
+	while (!done) instance.ProcessEvents();
 }
 
 wgpu::ShaderModule ofxDawn::createShaderModule(const std::string & wgsl, const std::string & label) {

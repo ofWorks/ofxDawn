@@ -22,6 +22,11 @@ public:
 	// async requests). Call after submitting work you need to wait on.
 	void processEvents();
 
+	// Blocks until all submitted GPU work has completed. Used to make WebGPU
+	// (Metal) results safe to read from OpenGL, which can't wait on Metal
+	// fences directly.
+	void waitForGPU();
+
 	// Compiles a WGSL source string into a shader module.
 	wgpu::ShaderModule createShaderModule(const std::string & wgsl, const std::string & label = "ofxDawn shader");
 

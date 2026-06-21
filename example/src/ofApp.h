@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxDawn.h"
 #include "ofxDawnParticles.h"
+#include "ofxDawnSharedTexture.h"
 
 class ofApp : public ofBaseApp {
 public:
@@ -12,4 +13,5 @@ public:
 
 	ofxDawn dawn;
 	ofxDawnParticles particles;
+	ofxDawnSharedTexture sharedTex;
 };
