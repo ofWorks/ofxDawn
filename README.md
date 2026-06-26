@@ -99,6 +99,8 @@ possible future optimization.
       the GPU isn't stalled each draw)
 - [ ] Handle window resize (re-create the shared texture and update bounds)
 - [ ] Sized/round point sprites instead of 1px points (instanced quads)
+- [ ] Configurable shared texture pixel format (`BGRA8Unorm` by default, opt-in
+      `RGBA16Float` / `RGBA32Float` for HDR and high-precision targets)
 - [ ] Port the "Fulcrum MARU S³" 3D gravity demo (multi-pass: compute → HDR
       trail → tonemap → IOSurface, glm camera, instanced well/probe geometry,
       ofxMicroUI controls). Shaders port nearly verbatim; main work is the
